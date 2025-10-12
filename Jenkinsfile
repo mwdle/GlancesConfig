@@ -5,7 +5,7 @@ pipeline {
         string(name: 'TARGET_HOST', defaultValue: 'pi', description: 'The resolvable hostname or IP of the target machine.')
         credentials(
             name: 'GLANCES_PASSWORD_CREDENTIAL_ID',
-            credentialType: 'com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl',
+            credentialType: 'com.cloudbees.plugins.credentials.common.StandardUsernamePasswordCredentials',
             defaultValue: 'Glances - rpi',
             description: 'The Jenkins credential ID for the Glances password (Username with password). The username is ignored.',
             required: true
