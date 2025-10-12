@@ -23,7 +23,7 @@ pipeline {
         stage('Deploy Glances') {
             steps {
                 withCredentials([
-                    usernamePassword(credentialsId: params.GLANCES_PASSWORD_CREDENTIAL_ID, passwordVariable: 'GLANCES_PASS'),
+                    usernamePassword(credentialsId: params.GLANCES_PASSWORD_CREDENTIAL_ID, usernameVariable: 'GLANCES_USER', passwordVariable: 'GLANCES_PASS'),
                     sshUserPrivateKey(credentialsId: params.PI_SSH_CREDENTIAL_ID, keyFileVariable: 'SSH_KEY_FILE', usernameVariable: 'SSH_USER')
                 ]) {
                     script {
