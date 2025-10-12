@@ -12,7 +12,7 @@ pipeline {
         )
         credentials(
             name: 'PI_SSH_CREDENTIAL_ID',
-            credentialType: 'com.cloudbees.plugins.credentials.impl.BasicSSHUserPrivateKey',
+            credentialType: 'com.cloudbees.jenkins.plugins.sshcredentials.SSHUserPrivateKey',
             defaultValue: 'rpi-ssh',
             description: 'The Jenkins credential ID for SSH access to the target machine.',
             required: true
@@ -27,7 +27,6 @@ pipeline {
                     sshUserPrivateKey(credentialsId: params.PI_SSH_CREDENTIAL_ID, keyFileVariable: 'SSH_KEY_FILE', usernameVariable: 'SSH_USER')
                 ]) {
                     script {
-                        env.TARGET_HOST = params.TARGET_HOST
                         sh 'ansible-playbook deploy_glances.yml -i "$TARGET_HOST," --user "$SSH_USER" --private-key "$SSH_KEY_FILE" -e "target_hosts=$TARGET_HOST" -e "glances_password=$GLANCES_PASS"'
                     }
                 }
