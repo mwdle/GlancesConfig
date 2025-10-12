@@ -1,0 +1,85 @@
+---
+- name: Deploy and Configure Glances
+  hosts: "{{ target_hosts }}"
+  become: yes
+
+  tasks:
+    - name: Fail if required variables are not provided
+      ansible.builtin.fail:
+        msg: "The 'target_hosts' and 'glances_password' variables must be set. Use -e 'target_hosts=... glances_password=...'"
+      when: glances_password == "" or target_hosts == ""
+
+    - name: Create a dedicated system user for Glances
+      ansible.builtin.user:
+        name: glances
+        system: yes
+        create_home: yes
+        shell: /usr/sbin/nologin
+
+    - name: Update apt cache (for Debian-based systems)
+      ansible.builtin.apt:
+        update_cache: yes
+        cache_valid_time: 3600
+      when: ansible_os_family == "Debian"
+      changed_when: false
+
+    - name: Ensure python3-pip is installed (OS-agnostic)
+      ansible.builtin.package:
+        name: python3-pip
+        state: present
+
+    - name: Install/Update Glances
+      ansible.builtin.pip:
+        name: glances
+        state: latest
+
+    - name: Set glances password non-interactively as the 'glances' user
+      become_user: glances # Runs this task as the 'glances' user
+      ansible.builtin.expect:
+        command: "glances -s --password"
+        responses:
+          # Matches 'Define the Glances server password (glances username):'
+          # This is the first prompt for the password.
+          (?i)password \(glances username\): "{{ glances_password }}"
+          # Matches 'Password (confirm):'
+          # This is the second, confirmation prompt.
+          (?i)Password \(confirm\): "{{ glances_password }}"
+          # Matches 'Do you want to save the password? [Yes/No]:'
+          (?i)Do you want to save the password\?.*: "Yes"
+        timeout: 15
+      no_log: true # Prevents the password from appearing in logs
+
+    - name: Create Systemd unit file
+      ansible.builtin.copy:
+        dest: /etc/systemd/system/glances.service
+        owner: root
+        group: root
+        mode: "0644"
+        content: |
+          [Unit]
+          Description=Glances Monitoring Tool
+          After=network.target
+
+          [Service]
+          ExecStart=/usr/local/bin/glances -s --password
+          Restart=always
+          RemainAfterExit=no
+          User=glances
+          Group=glances
+
+          [Install]
+          WantedBy=multi-user.target
+      notify: Restart Glances
+
+    - name: Ensure Glances service is running and enabled on boot
+      ansible.builtin.systemd:
+        name: glances
+        state: started
+        enabled: yes
+        daemon_reload: yes
+
+  handlers:
+    - name: Restart Glances
+      ansible.builtin.systemd:
+        name: glances
+        state: restarted
