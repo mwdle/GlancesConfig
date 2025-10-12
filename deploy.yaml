@@ -1,13 +1,13 @@
 ---
 - name: Deploy and Configure Glances
-  hosts: "{{ target_hosts }}"
+  hosts: "{{ target_host }}"
   become: yes
 
   tasks:
     - name: Fail if required variables are not provided
       ansible.builtin.fail:
-        msg: "The 'target_hosts' and 'glances_password' variables must be set. Use -e 'target_hosts=... glances_password=...'"
-      when: glances_password == "" or target_hosts == ""
+        msg: "The 'target_host' and 'glances_pass' variables must be set. Use -e 'target_host=... glances_pass=...'"
+      when: glances_pass == "" or target_host == ""
 
     - name: Create a dedicated system user for Glances
       ansible.builtin.user:
@@ -40,10 +40,10 @@
         responses:
           # Matches 'Define the Glances server password (glances username):'
           # This is the first prompt for the password.
-          (?i)password \(glances username\): "{{ glances_password }}"
+          (?i)password \(glances username\): "{{ glances_pass }}"
           # Matches 'Password (confirm):'
           # This is the second, confirmation prompt.
-          (?i)Password \(confirm\): "{{ glances_password }}"
+          (?i)Password \(confirm\): "{{ glances_pass }}"
           # Matches 'Do you want to save the password? [Yes/No]:'
           (?i)Do you want to save the password\?.*: "Yes"
         timeout: 15

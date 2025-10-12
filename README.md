@@ -43,7 +43,7 @@ The Ansible playbook follows several best practices for a clean and secure deplo
 
 ## File Structure
 
-- `deploy_glances.yml`: The main Ansible playbook that performs the installation and configuration.
+- `deploy.yml`: The main Ansible playbook that performs the installation and configuration.
 - `Jenkinsfile`: The declarative pipeline script for automating the deployment via Jenkins.
 - `README.md`: This documentation file.
 

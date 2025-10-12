@@ -6,7 +6,7 @@ pipeline {
         credentials(
             name: 'GLANCES_PASSWORD_CREDENTIAL_ID',
             credentialType: 'com.cloudbees.plugins.credentials.common.StandardUsernamePasswordCredentials',
-            defaultValue: 'Glances - rpi',
+            defaultValue: 'rpi-glances',
             description: 'The Jenkins credential ID for the Glances password (Username with password). The username is ignored.',
             required: true
         )
@@ -24,10 +24,10 @@ pipeline {
             steps {
                 withCredentials([
                     usernamePassword(credentialsId: params.GLANCES_PASSWORD_CREDENTIAL_ID, usernameVariable: 'GLANCES_USER', passwordVariable: 'GLANCES_PASS'),
-                    sshUserPrivateKey(credentialsId: params.PI_SSH_CREDENTIAL_ID, keyFileVariable: 'SSH_KEY_FILE', usernameVariable: 'SSH_USER')
+                    sshUserPrivateKey(credentialsId: params.PI_SSH_CREDENTIAL_ID, keyFileVariable: 'SSH_KEY', usernameVariable: 'SSH_USER')
                 ]) {
                     script {
-                        sh 'ansible-playbook deploy_glances.yml -i "$TARGET_HOST," --user "$SSH_USER" --private-key "$SSH_KEY_FILE" -e "target_hosts=$TARGET_HOST" -e "glances_password=$GLANCES_PASS"'
+                        sh 'ansible-playbook deploy.yaml -i "$TARGET_HOST," --user "$SSH_USER" --private-key "$SSH_KEY" -e "target_host=$TARGET_HOST" -e "glances_pass=$GLANCES_PASS"'
                     }
                 }
             }
