@@ -35,6 +35,12 @@
         name: python3-pexpect
         state: present
 
+    - name: Ensure any old Glances config is removed
+      become_user: glances
+      ansible.builtin.file:
+        path: /home/glances/.config/glances/glances.conf
+        state: absent
+
     # Glances does not have a non-interactive password set command.
     # We must generate the password file as root, then move and secure it.
     - name: Set glances password non-interactively
