@@ -41,7 +41,7 @@
           (?i)Password \(confirm\): "{{ glances_pass }}"
           (?i)Do you want to save the password\?.*: "Yes"
         timeout: 15
-      no_log: true # Prevents the password from appearing in logs
+      # no_log: true # Prevents the password from appearing in logs
 
     - name: Create Systemd unit file
       ansible.builtin.copy:
