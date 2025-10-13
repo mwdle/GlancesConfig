@@ -45,13 +45,14 @@
     # Glances does not have a non-interactive password set command.
     # We must generate the password file as root, then move and secure it.
     - name: Set glances password non-interactively
-      become_user: glances # Runs this task as the 'glances' user
+      become_user: glances
       ansible.builtin.expect:
         command: "glances -s --password"
         responses:
-          "(?i).*password \\(glances username\\):": "{{ glances_pass }}"
-          "(?i).*Password \\(confirm\\):": "{{ glances_pass }}"
-          "(?i).*Do you want to save the password\\?.*:": "Yes"
+          # Use simple, unique substrings instead of complex regex
+          "Define the Glances server password": "{{ glances_pass }}"
+          "Password (confirm)": "{{ glances_pass }}"
+          "save the password? [Yes/No]": "Yes"
         timeout: 15
       # no_log: true # Prevents the password from appearing in logs
 
