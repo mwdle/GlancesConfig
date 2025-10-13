@@ -16,6 +16,7 @@
         name: glances
         system: yes
         create_home: yes
+        home: /home/glances
         shell: /usr/sbin/nologin
 
     - name: Update apt cache (Debian-based systems)
