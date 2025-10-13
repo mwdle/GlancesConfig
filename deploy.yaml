@@ -39,7 +39,7 @@
     - name: Ensure any old Glances config is removed
       become_user: glances
       ansible.builtin.file:
-        path: /home/glances/.config/glances/glances.conf
+        path: /home/glances/.config/glances
         state: absent
 
     # Glances does not have a non-interactive password set command.
