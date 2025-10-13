@@ -1,5 +1,5 @@
 ---
-- name: Deploy and Configure Glances (via pipx)
+- name: Deploy and Configure Glances
   hosts: "{{ target_host }}"
   become: yes
   vars:
@@ -18,27 +18,21 @@
         create_home: yes
         shell: /usr/sbin/nologin
 
-    - name: Update apt cache (for Debian-based systems)
+    - name: Update apt cache (Debian-based systems)
       ansible.builtin.apt:
         update_cache: yes
         cache_valid_time: 3600
       when: ansible_os_family == "Debian"
       changed_when: false
 
-    - name: Ensure python3-pip and pipx are installed (OS-agnostic)
+    - name: Install Glances using the native package manager
       ansible.builtin.package:
-        name:
-          - python3-pip
-          - pipx
+        name: glances
         state: present
 
-    - name: Install/Update Glances using pipx
-      become_user: glances
-      ansible.builtin.command:
-        cmd: pipx install --force glances
-      changed_when: true # Assume this task always makes a change for simplicity
-
-    - name: Set glances password non-interactively as the 'glances' user
+    # Glances does not have a non-interactive password set command.
+    # We must generate the password file as root, then move and secure it.
+    - name: Set glances password non-interactively
       become_user: glances # Runs this task as the 'glances' user
       ansible.builtin.expect:
         command: "glances -s --password"
@@ -61,7 +55,7 @@
           After=network.target
 
           [Service]
-          ExecStart=/home/glances/.local/bin/glances -s --password
+          ExecStart=/usr/bin/glances -s --password
           Restart=always
           RemainAfterExit=no
           User=glances
