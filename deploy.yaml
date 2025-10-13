@@ -31,6 +31,11 @@
         name: glances
         state: present
 
+    - name: Install bottle for the web server mode
+      ansible.builtin.package:
+        name: python3-bottle
+        state: present
+
     - name: Create Systemd unit file
       ansible.builtin.copy:
         dest: /etc/systemd/system/glances.service
