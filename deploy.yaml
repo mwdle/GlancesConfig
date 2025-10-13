@@ -30,7 +30,7 @@
         name: glances
         state: present
 
-    - name: Install pexpect for the expect module (OS-agnostic)
+    - name: Install pexpect for the expect module
       ansible.builtin.package:
         name: python3-pexpect
         state: present
