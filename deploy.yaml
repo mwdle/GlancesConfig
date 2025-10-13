@@ -1,7 +1,9 @@
 ---
-- name: Deploy and Configure Glances
+- name: Deploy and Configure Glances (via pipx)
   hosts: "{{ target_host }}"
   become: yes
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
 
   tasks:
     - name: Fail if required variables are not provided
@@ -23,28 +25,26 @@
       when: ansible_os_family == "Debian"
       changed_when: false
 
-    - name: Ensure python3-pip is installed (OS-agnostic)
+    - name: Ensure python3-pip and pipx are installed (OS-agnostic)
       ansible.builtin.package:
-        name: python3-pip
+        name:
+          - python3-pip
+          - pipx
         state: present
 
-    - name: Install/Update Glances
-      ansible.builtin.pip:
-        name: glances
-        state: latest
+    - name: Install/Update Glances using pipx
+      become_user: glances
+      ansible.builtin.command:
+        cmd: pipx install --force glances
+      changed_when: true # Assume this task always makes a change for simplicity
 
     - name: Set glances password non-interactively as the 'glances' user
       become_user: glances # Runs this task as the 'glances' user
       ansible.builtin.expect:
         command: "glances -s --password"
         responses:
-          # Matches 'Define the Glances server password (glances username):'
-          # This is the first prompt for the password.
           (?i)password \(glances username\): "{{ glances_pass }}"
-          # Matches 'Password (confirm):'
-          # This is the second, confirmation prompt.
           (?i)Password \(confirm\): "{{ glances_pass }}"
-          # Matches 'Do you want to save the password? [Yes/No]:'
           (?i)Do you want to save the password\?.*: "Yes"
         timeout: 15
       no_log: true # Prevents the password from appearing in logs
@@ -61,7 +61,7 @@
           After=network.target
 
           [Service]
-          ExecStart=/usr/local/bin/glances -s --password
+          ExecStart=/home/glances/.local/bin/glances -s --password
           Restart=always
           RemainAfterExit=no
           User=glances
