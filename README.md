@@ -40,6 +40,7 @@ The Ansible playbook follows several best practices for a clean and secure deplo
 3. **Jenkins Credentials:**
    - **Glances Password:** A "Username with password" credential must be created in Jenkins to store the desired Glances password.
    - **SSH Key:** An "SSH Username with private key" credential must be created for SSH access to the target machine.
+   - **Sudo Password:** A "Username with password" credential must be created to store the sudo password for the SSH user on the target machine.
 
 ## File Structure
 
@@ -51,8 +52,9 @@ The Ansible playbook follows several best practices for a clean and secure deplo
 
 1. **Add Credentials to Jenkins:**
 
-   - Create a "Username with password" credential (e.g., ID: `glances-rpi-password`). The username can be anything; it is ignored.
+   - Create a "Username with password" credential (e.g., ID: `glances-rpi-password`). The username is ignored.
    - Create an "SSH Username with private key" credential for your target device (e.g., ID: `rpi-ssh`).
+   - Create another "Username with password" credential for the sudo password (e.g., ID: `rpi-sudo`). The username is ignored.
 
 2. **Configure the Jenkins Pipeline:**
 
@@ -63,7 +65,7 @@ The Ansible playbook follows several best practices for a clean and secure deplo
 3. **Run the Pipeline:**
    - Click "Build with Parameters".
    - Verify or update the `TARGET_HOST` to match your device's IP or hostname.
-   - Select the correct credential IDs from the dropdowns for the Glances password and SSH key.
+   - Select the correct credential IDs from the dropdowns for the Glances password, SSH key, and sudo password.
    - Click "Build".
 
 The pipeline will execute the Ansible playbook, deploying and configuring Glances on the specified host.
