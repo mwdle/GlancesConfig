@@ -43,7 +43,7 @@
           After=network.target
 
           [Service]
-          ExecStart=/usr/bin/glances -s
+          ExecStart=/usr/bin/glances -w
           Restart=always
           RemainAfterExit=no
           User=glances
