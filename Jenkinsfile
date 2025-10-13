@@ -5,14 +5,14 @@ pipeline {
         string(name: 'TARGET_HOST', defaultValue: 'pi', description: 'The resolvable hostname or IP of the target machine.')
         credentials(
             name: 'GLANCES_PASSWORD_CREDENTIAL_ID',
-            credentialType: 'com.cloudbees.plugins.credentials.common.StandardUsernamePasswordCredentials',
+            credentialType: 'Username with password',
             defaultValue: 'rpi-glances',
             description: 'The Jenkins credential ID for the Glances password (Username with password). The username is ignored.',
             required: true
         )
         credentials(
             name: 'PI_SSH_CREDENTIAL_ID',
-            credentialType: 'com.cloudbees.jenkins.plugins.sshcredentials.SSHUserPrivateKey',
+            credentialType: 'SSH Username with private key',
             defaultValue: 'rpi-ssh',
             description: 'The Jenkins credential ID for SSH access to the target machine.',
             required: true
