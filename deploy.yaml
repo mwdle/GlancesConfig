@@ -9,7 +9,7 @@
     - name: Fail if required variables are not provided
       ansible.builtin.fail:
         msg: "The 'target_host' variable must be set. Use -e 'target_host=...'"
-      when: glances_pass == "" or target_host == ""
+      when: target_host == ""
 
     - name: Create a dedicated system user for Glances
       ansible.builtin.user:
