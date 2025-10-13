@@ -52,7 +52,7 @@
           # Use simple, unique substrings instead of complex regex
           "Define the Glances server password": "{{ glances_pass }}"
           "Password (confirm)": "{{ glances_pass }}"
-          "save the password? [Yes/No]": "Yes"
+          # "save the password? [Yes/No]": "Yes"
         timeout: 15
       # no_log: true # Prevents the password from appearing in logs
 
