@@ -48,6 +48,7 @@
           After=network.target
 
           [Service]
+          WorkingDirectory=/home/glances
           ExecStart=/usr/bin/glances -w -B 0.0.0.0
           Restart=always
           RemainAfterExit=no
