@@ -42,9 +42,9 @@
       ansible.builtin.expect:
         command: "glances -s --password"
         responses:
-          (?i)password \(glances username\): "{{ glances_pass }}"
-          (?i)Password \(confirm\): "{{ glances_pass }}"
-          (?i)Do you want to save the password\?.*: "Yes"
+          "(?i).*password \\(glances username\\):": "{{ glances_pass }}"
+          "(?i).*Password \\(confirm\\):": "{{ glances_pass }}"
+          "(?i).*Do you want to save the password\\?.*:": "Yes"
         timeout: 15
       # no_log: true # Prevents the password from appearing in logs
 
