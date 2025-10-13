@@ -34,6 +34,9 @@
 
     - name: Install/Update Glances using pipx
       become_user: glances
+      vars:
+        # Tell Ansible to use a temp directory inside the user's home to avoid privilege errors.
+        ansible_remote_tmp: /home/glances/.ansible/tmp
       ansible.builtin.command:
         cmd: pipx install --force glances
       changed_when: true # Assume this task always makes a change for simplicity
