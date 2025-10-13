@@ -1,6 +1,6 @@
 pipeline {
     agent { label 'docker' }
-
+    options { disableConcurrentBuilds() }
     parameters {
         string(name: 'TARGET_HOST', defaultValue: 'pi', description: 'The resolvable hostname or IP of the target machine.')
         credentials(
