@@ -30,7 +30,7 @@
       ansible.builtin.package:
         name:
           - pipx
-          - acl # Allows ansible to become unprivileged users
+          - acl # Allows ansible to become unprivileged users, in this case, the `glances` user.
         state: present
 
     - name: Install Glances using pipx
