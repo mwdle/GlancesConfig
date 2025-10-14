@@ -17,7 +17,7 @@
         system: yes
         create_home: yes
         home: /home/glances
-        shell: /usr/bin/bash
+        shell: /usr/sbin/nologin
 
     - name: Update apt cache (Debian-based systems)
       ansible.builtin.apt:
