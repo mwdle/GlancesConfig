@@ -26,12 +26,11 @@
       when: ansible_os_family == "Debian"
       changed_when: false
 
-    - name: Ensure pip and pipx are installed system-wide
+    - name: Ensure pipx and acl are installed
       ansible.builtin.package:
         name:
-          - python3-pip
           - pipx
-          - acl
+          - acl # Allows ansible to become unprivileged users
         state: present
 
     - name: Install Glances using pipx
