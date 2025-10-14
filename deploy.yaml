@@ -17,7 +17,6 @@
         system: yes
         create_home: yes
         home: /home/glances
-        # shell: /bin/false
         shell: /usr/sbin/nologin
 
     - name: Update apt cache (Debian-based systems)
@@ -27,9 +26,10 @@
       when: ansible_os_family == "Debian"
       changed_when: false
 
-    - name: Ensure pipx and acl are installed
+    - name: Ensure psutil, pipx and acl are installed
       ansible.builtin.package:
         name:
+          - python3-psutil
           - pipx
           - acl # Allows ansible to become unprivileged users, in this case, the `glances` user.
         state: present
