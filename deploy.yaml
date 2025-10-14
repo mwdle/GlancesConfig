@@ -9,7 +9,7 @@
     - name: Fail if required variables are not provided
       ansible.builtin.fail:
         msg: "The 'target_host' variable must be set. Use -e 'target_host=...'"
-      when: target_host == ""
+      when: target_host is not defined or target_host | length == 0
 
     - name: Create a dedicated system user for Glances
       ansible.builtin.user:
@@ -26,15 +26,20 @@
       when: ansible_os_family == "Debian"
       changed_when: false
 
-    - name: Install Glances using the native package manager
+    - name: Ensure pip and pipx are installed system-wide
       ansible.builtin.package:
-        name: glances
+        name:
+          - python3-pip
+          - pipx
         state: present
 
-    - name: Install bottle for the web server mode
-      ansible.builtin.package:
-        name: python3-bottle
-        state: present
+    - name: Install Glances using pipx
+      become_user: glances
+      ansible.builtin.command:
+        cmd: "pipx install 'glances[all]'"
+        creates: /home/glances/.local/bin/glances
+      environment:
+        PATH: /usr/bin:/bin:/home/glances/.local/bin
 
     - name: Create Systemd unit file
       ansible.builtin.copy:
@@ -49,7 +54,7 @@
 
           [Service]
           WorkingDirectory=/home/glances
-          ExecStart=/usr/bin/glances -w -B 0.0.0.0
+          ExecStart=/home/glances/.local/bin/glances -w -B 0.0.0.0
           Restart=always
           RemainAfterExit=no
           User=glances
