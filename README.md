@@ -16,8 +16,8 @@ The deployment is designed to be secure and idempotent, using a dedicated system
 
 ## Features
 
-- **Automated Installation:** Installs the latest version of Glances via `pip`.
-- **Cross-Platform:** Supports both Debian and Red Hat family Linux distributions (e.g., DietPi, Ubuntu, Fedora, CentOS).
+- **Automated Installation:** Installs the latest version of Glances via `pipx`.
+- **Cross-Platform:** Supports both Debian Linux distributions ONLY (e.g., DietPi, Ubuntu, Debian, etc.).
 - **Secure:**
   - Runs Glances as a dedicated, non-login system user (`glances`).
   - Configures password authentication for server mode.
@@ -28,7 +28,7 @@ The deployment is designed to be secure and idempotent, using a dedicated system
 
 The Ansible playbook follows several best practices for a clean and secure deployment:
 
-1. **Installation via Pip:** The playbook installs Glances using `pip` instead of a system package manager (`apt`, `dnf`, etc.). This ensures that the latest version of Glances is always installed, providing access to the newest features and bug fixes.
+1. **Installation via Pip:** The playbook installs Glances using `pipx` instead of a `apt`. This ensures that the latest version of Glances is always installed, providing access to the newest features and bug fixes. Additionally this approach works around a known issue, being that the Debian package does _not_ include the necessary files for the Glances web server to function.
 2. **Dedicated System User:** For security, a system user named `glances` with no login shell (`/usr/sbin/nologin`) is created. The Glances service runs entirely under this unprivileged account, adhering to the principle of least privilege.
 3. **Automated Password Setup:** Glances does not have a non-interactive method for setting its password. The playbook automates this interactive-only prompt by using Ansible's `expect` module, which securely provides the password to the command-line prompts.
 4. **Systemd Service Management:** A `systemd` service file is created to manage the Glances process. This allows the service to start automatically on boot and restart if it ever crashes, ensuring high availability.

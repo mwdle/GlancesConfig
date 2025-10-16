@@ -19,29 +19,39 @@
         home: /home/glances
         shell: /usr/sbin/nologin
 
-    - name: Update apt cache (Debian-based systems)
+    - name: Install prerequisite packages
       ansible.builtin.apt:
+        name:
+          - build-essential
+          - python3-dev
+          - pipx
+          - acl
+        state: present
         update_cache: yes
         cache_valid_time: 3600
-      when: ansible_os_family == "Debian"
-      changed_when: false
-
-    - name: Ensure psutil, pipx and acl are installed
-      ansible.builtin.package:
-        name:
-          - build-essential # Build tools for building psutil
-          - python3-dev # Build tools for building psutil
-          - pipx
-          - acl # Allows ansible to become unprivileged users, in this case, the `glances` user.
-        state: present
 
     - name: Install Glances using pipx
       become_user: glances
       ansible.builtin.command:
         cmd: "pipx install 'glances[all]'"
         creates: /home/glances/.local/bin/glances
-      environment:
-        PATH: /usr/bin:/bin:/home/glances/.local/bin
+
+    - name: Ensure old password file if it exists
+      become: yes
+      ansible.builtin.file:
+        path: /home/glances/.config/glances/glances.pwd
+        state: absent
+
+    - name: Generate the glances.pwd file using expect
+      become_user: glances
+      ansible.builtin.expect:
+        command: "/home/glances/.local/bin/glances -w --password"
+        responses:
+          "Define the Glances server password": "{{ glances_pass }}"
+          "Password (confirm)": "{{ glances_pass }}"
+          "save the password?": "Yes"
+        timeout: 20
+      #no_log: true # Prevents password from appearing in logs
 
     - name: Create Systemd unit file
       ansible.builtin.copy:
@@ -56,7 +66,7 @@
 
           [Service]
           WorkingDirectory=/home/glances
-          ExecStart=/home/glances/.local/bin/glances -w -B 0.0.0.0
+          ExecStart=/home/glances/.local/bin/glances -w -B 0.0.0.0 --password
           Restart=always
           RemainAfterExit=no
           User=glances
@@ -72,6 +82,22 @@
         state: started
         enabled: yes
         daemon_reload: yes
+
+    - name: Force handler to run immediately
+      ansible.builtin.meta: flush_handlers
+
+    - name: Verify that the Glances web service is responding
+      ansible.builtin.uri:
+        url: "http://localhost:61208"
+        method: GET
+        status_code: 200
+        user: glances
+        password: "{{ glances_pass }}"
+        force_basic_auth: yes
+      register: glances_health_check
+      until: glances_health_check.status == 200
+      retries: 5
+      delay: 3
 
   handlers:
     - name: Restart Glances

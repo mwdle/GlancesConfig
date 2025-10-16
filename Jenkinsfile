@@ -17,16 +17,24 @@ pipeline {
             description: 'The Jenkins credential ID containing the sudo password to use on the target machine',
             required: true
         )
+        credentials(
+            name: 'GLANCES_CREDENTIAL_ID',
+            credentialType: 'Username with password',
+            defaultValue: 'rpi-glances',
+            description: 'The Jenkins credential ID for the Glances password. The username is ignored.',
+            required: true
+        )
     }
     stages {
         stage('Deploy Glances') {
             steps {
                 withCredentials([
                     sshUserPrivateKey(credentialsId: params.SSH_CREDENTIAL_ID, keyFileVariable: 'SSH_KEY', usernameVariable: 'SSH_USER'),
-                    usernamePassword(credentialsId: params.TARGET_MACHINE_CREDENTIAL_ID, usernameVariable: 'UNUSED_VAR_2', passwordVariable: 'SUDO_PASS'),
+                    usernamePassword(credentialsId: params.TARGET_MACHINE_CREDENTIAL_ID, usernameVariable: 'UNUSED_VAR_1', passwordVariable: 'SUDO_PASS'),
+                    usernamePassword(credentialsId: params.GLANCES_CREDENTIAL_ID, usernameVariable: 'UNUSED_VAR_2', passwordVariable: 'GLANCES_PASS')
                 ]) {
                     script {
-                        sh 'ansible-playbook deploy.yaml -i "$TARGET_HOST," --user "$SSH_USER" --private-key "$SSH_KEY" -e "target_host=$TARGET_HOST" -e "ansible_become_pass=$SUDO_PASS"'
+                        sh 'ansible-playbook deploy.yaml -i "$TARGET_HOST," --user "$SSH_USER" --private-key "$SSH_KEY" -e "target_host=$TARGET_HOST" -e "ansible_become_pass=$SUDO_PASS" -e "glances_pass=$GLANCES_PASS"'
                     }
                 }
             }
