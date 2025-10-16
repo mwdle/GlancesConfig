@@ -1,20 +1,20 @@
 def jobParams = [
     parameters([
-        string(name: 'TARGET_HOST', defaultValue: 'pi', description: 'The resolvable hostname or IP of the target machine.')
+        string(name: 'TARGET_HOST', defaultValue: 'pi', description: 'The resolvable hostname or IP of the target machine.'),
         credentials(
             name: 'SSH_CREDENTIAL_ID',
             credentialType: 'SSH Username with private key',
             defaultValue: 'rpi-ssh',
             description: 'The Jenkins credential ID for SSH access to the target machine.',
             required: true
-        )
+        ),
         credentials(
             name: 'TARGET_MACHINE_CREDENTIAL_ID',
             credentialType: 'Username with password',
             defaultValue: 'rpi',
             description: 'The Jenkins credential ID containing the sudo password to use on the target machine',
             required: true
-        )
+        ),
         credentials(
             name: 'GLANCES_CREDENTIAL_ID',
             credentialType: 'Username with password',
