@@ -48,9 +48,9 @@
       ansible.builtin.expect:
         command: "/home/glances/.local/bin/glances -w --password"
         responses:
-          "Define the Glances webserver password": "{{ glances_pass }}"
-          "Password (confirm)": "{{ glances_pass }}"
-          "save the password?": "Yes"
+          ".*Glances .*server password.*": "{{ glances_pass }}"
+          ".*Password (confirm).*": "{{ glances_pass }}"
+          ".*save the password?.*": "Yes"
         timeout: 20
       #no_log: true # Prevents password from appearing in logs
 
