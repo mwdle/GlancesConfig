@@ -57,9 +57,10 @@
             command: "/home/glances/.local/bin/glances -w --password"
             responses:
               ".*Glances .*server password.*": "{{ glances_pass }}"
-              ".*Password (confirm).*": "{{ glances_pass }}"
+              ".*Password.*": "{{ glances_pass }}"
               ".*save the password?.*": "Yes"
             timeout: 180 # Long timeout provides better support for resource-limited systems that can take quite some time to hash the password.
+            echo: yes # Adds detailed interaction logging for easier debugging
 
       always:
         - name: Revert shell to nologin for security
