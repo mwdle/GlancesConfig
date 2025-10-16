@@ -43,15 +43,29 @@
         path: /home/glances/.config/glances/glances.pwd
         state: absent
 
-    - name: Generate the glances.pwd file using expect
-      become_user: glances
-      ansible.builtin.expect:
-        command: "/home/glances/.local/bin/glances -w --password"
-        responses:
-          ".*Glances .*server password.*": "{{ glances_pass }}"
-          ".*Password (confirm).*": "{{ glances_pass }}"
-          ".*save the password?.*": "Yes"
-        timeout: 60 # Long timeout provides better support for resource-limited systems that can take quite some time to hash the password.
+    # This block temporarily enables a shell to maintain a stable communication channel for expect
+    - name: Set Glances password non-interactively
+      block:
+        - name: Temporarily set shell to /bin/bash for expect
+          ansible.builtin.user:
+            name: glances
+            shell: /bin/bash
+
+        - name: Generate the glances.pwd file using expect
+          become_user: glances
+          ansible.builtin.expect:
+            command: "/home/glances/.local/bin/glances -w --password"
+            responses:
+              ".*Glances .*server password.*": "{{ glances_pass }}"
+              ".*Password (confirm).*": "{{ glances_pass }}"
+              ".*save the password?.*": "Yes"
+            timeout: 60 # Long timeout provides better support for resource-limited systems that can take quite some time to hash the password.
+
+      always:
+        - name: Revert shell to nologin for security
+          ansible.builtin.user:
+            name: glances
+            shell: /usr/sbin/nologin
 
     - name: Create Systemd unit file
       ansible.builtin.copy:
