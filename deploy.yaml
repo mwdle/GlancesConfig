@@ -55,8 +55,9 @@
           ".*Glances .*server password.*": "{{ glances_pass }}"
           ".*Password.*": "{{ glances_pass }}"
           ".*save the password?.*": "Yes"
-          ".*": "\x03"
-        timeout: 120 # Long timeout provides better support for resource-limited systems that can take quite some time to hash the password.
+          ".*Application startup complete.*": "\x03"
+        # Long timeout provides better support for resource-limited systems that can take some time to hash the password.
+        timeout: 120
 
     - name: Create Systemd unit file
       ansible.builtin.copy:
