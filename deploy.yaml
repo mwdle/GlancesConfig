@@ -81,7 +81,8 @@
 
           [Service]
           WorkingDirectory=/home/glances
-          ExecStart=/home/glances/.local/bin/glances -w -B 0.0.0.0 --password -t 30 # For single core systems, it can be useful to limit the refresh/polling rate for measurements. In this case it is set to 30 seconds.
+          # For single core systems, it can be useful to limit the refresh/polling rate for measurements. In this case it is set to 30 seconds.
+          ExecStart=/home/glances/.local/bin/glances -w -B 0.0.0.0 --password -t 30
           Restart=always
           RemainAfterExit=no
           User=glances
