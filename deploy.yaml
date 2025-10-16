@@ -17,7 +17,7 @@
         system: yes
         create_home: yes
         home: /home/glances
-        shell: /usr/sbin/nologin
+        shell: /bin/false
 
     - name: Install prerequisite packages
       ansible.builtin.apt:
@@ -51,7 +51,7 @@
           ".*Glances .*server password.*": "{{ glances_pass }}"
           ".*Password (confirm).*": "{{ glances_pass }}"
           ".*save the password?.*": "Yes"
-        timeout: 90 # Long timeout provides better support for resource-limited systems
+        timeout: 60 # Long timeout provides better support for resource-limited systems
       #no_log: true # Prevents password from appearing in logs
 
     - name: Create Systemd unit file
