@@ -51,7 +51,7 @@
           ".*Glances .*server password.*": "{{ glances_pass }}"
           ".*Password (confirm).*": "{{ glances_pass }}"
           ".*save the password?.*": "Yes"
-        timeout: 20
+        timeout: 90 # Long timeout provides better support for resource-limited systems
       #no_log: true # Prevents password from appearing in logs
 
     - name: Create Systemd unit file
