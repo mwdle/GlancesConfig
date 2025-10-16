@@ -52,9 +52,9 @@ The Ansible playbook follows several best practices for a clean and secure deplo
 
 1. **Add Credentials to Jenkins:**
 
-   - Create a "Username with password" credential (e.g., ID: `glances-rpi-password`). The username is ignored.
+   - Create a "Username with password" credential (e.g., ID: `rpi-glances`). The username is ignored.
    - Create an "SSH Username with private key" credential for your target device (e.g., ID: `rpi-ssh`).
-   - Create another "Username with password" credential for the sudo password (e.g., ID: `rpi-sudo`). The username is ignored.
+   - Create another "Username with password" credential for the sudo password (e.g., ID: `rpi`). The username is ignored.
 
 2. **Configure the Jenkins Pipeline:**
 
