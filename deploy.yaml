@@ -41,6 +41,12 @@
         cmd: "pipx install 'glances[all]'"
         creates: /home/glances/.local/bin/glances
 
+    - name: Ensure Glances service is stopped
+      ansible.builtin.systemd:
+        name: glances
+        state: stopped
+      ignore_errors: yes # The service may not exist on the first run
+
     - name: Ensure any old glances password file is removed
       become: yes
       ansible.builtin.file:
@@ -56,8 +62,8 @@
           ".*Password.*": "{{ glances_pass }}"
           ".*save the password?.*": "Yes"
           ".*Application startup complete.*": "\x03"
-        # Long timeout provides better support for resource-limited systems that can take some time to hash the password.
-        timeout: 120
+        # Long timeout provides better support for resource-limited systems that can take some time to start Glances for the first time and hash the provided password.
+        timeout: 180
 
     - name: Create Systemd unit file
       ansible.builtin.copy:
