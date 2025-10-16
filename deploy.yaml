@@ -5,19 +5,23 @@
   vars:
     ansible_python_interpreter: /usr/bin/python3
 
-  tasks:
-    - name: Fail if required variables are not provided
-      ansible.builtin.fail:
-        msg: "The 'target_host' variable must be set. Use -e 'target_host=...'"
-      when: target_host is not defined or target_host | length == 0
+  pre_tasks:
+    - name: Verify that the 'glances_pass' variable is provided and not empty
+      ansible.builtin.assert:
+        that:
+          - glances_pass is defined
+          - glances_pass | length > 0
+        fail_msg: "The 'glances_pass' variable is required. Use -e 'glances_pass=...'"
+      run_once: true # Ensures this check runs only one time, not on every host
 
+  tasks:
     - name: Create a dedicated system user for Glances
       ansible.builtin.user:
         name: glances
         system: yes
         create_home: yes
         home: /home/glances
-        shell: /bin/false
+        shell: /usr/sbin/nologin
 
     - name: Install prerequisite packages
       ansible.builtin.apt:
@@ -29,7 +33,7 @@
           - python3-pexpect
         state: present
         update_cache: yes
-        cache_valid_time: 3600
+        cache_valid_time: 86400
 
     - name: Install Glances using pipx
       become_user: glances
@@ -37,36 +41,22 @@
         cmd: "pipx install 'glances[all]'"
         creates: /home/glances/.local/bin/glances
 
-    - name: Ensure old password file if it exists
+    - name: Ensure any old glances password file is removed
       become: yes
       ansible.builtin.file:
         path: /home/glances/.config/glances/glances.pwd
         state: absent
 
-    # This block temporarily enables a shell to maintain a stable communication channel for expect
-    - name: Set Glances password non-interactively
-      block:
-        - name: Temporarily set shell to /bin/bash for expect
-          ansible.builtin.user:
-            name: glances
-            shell: /bin/bash
-
-        - name: Generate the glances.pwd file using expect
-          become_user: glances
-          ansible.builtin.expect:
-            command: "/home/glances/.local/bin/glances -w --password"
-            responses:
-              ".*Glances .*server password.*": "{{ glances_pass }}"
-              ".*Password.*": "{{ glances_pass }}"
-              ".*save the password?.*": "Yes"
-            timeout: 180 # Long timeout provides better support for resource-limited systems that can take quite some time to hash the password.
-            echo: yes # Adds detailed interaction logging for easier debugging
-
-      always:
-        - name: Revert shell to nologin for security
-          ansible.builtin.user:
-            name: glances
-            shell: /usr/sbin/nologin
+    - name: Generate the glances.pwd files
+      become_user: glances
+      ansible.builtin.expect:
+        command: "/home/glances/.local/bin/glances -w --password"
+        responses:
+          ".*Glances .*server password.*": "{{ glances_pass }}"
+          ".*Password.*": "{{ glances_pass }}"
+          ".*save the password?.*": "Yes"
+          ".*": "\x03"
+        timeout: 120 # Long timeout provides better support for resource-limited systems that can take quite some time to hash the password.
 
     - name: Create Systemd unit file
       ansible.builtin.copy:
@@ -81,8 +71,9 @@
 
           [Service]
           WorkingDirectory=/home/glances
-          # For single core systems, it can be useful to limit the refresh/polling rate for measurements. In this case it is set to 30 seconds.
-          ExecStart=/home/glances/.local/bin/glances -w -B 0.0.0.0 --password -t 30
+          # For single core systems, it can be useful to strictly limit the refresh/polling rate for statistics to avoid overloading the CPU for the purpose of taking measurements.
+          # In this case, the polling rate is set to 15 seconds.
+          ExecStart=/home/glances/.local/bin/glances -w -B 0.0.0.0 --password -t 15
           Restart=always
           RemainAfterExit=no
           User=glances
