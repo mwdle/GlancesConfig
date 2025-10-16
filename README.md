@@ -1,6 +1,6 @@
 # Glances Ansible Deployment
 
-This project contains an Ansible playbook and a Jenkinsfile to automate the deployment of [Glances](https://github.com/nicolargo/glances) in server mode on a remote machine (e.g., a Raspberry Pi).
+This project contains an Ansible playbook and a Jenkinsfile to automate the deployment of [Glances](https://github.com/nicolargo/glances) in webserver mode on a remote machine (e.g., a Raspberry Pi).
 
 The deployment is designed to be secure and idempotent, using a dedicated system user and managing Glances with a `systemd` service.
 
