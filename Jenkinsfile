@@ -25,20 +25,15 @@ def jobParams = [
     ])
 ]
 
+// Apply job parameters
+properties(jobParams)
+
 // Exit early after parameter registration on the first build to avoid failure since the parameters inherently cannot be populated at first build.
 if (env.BUILD_NUMBER == '1') {
-    echo """
-    Jenkins is initializing this job and registering parameters.
-    Please re-run the job if you want to start a real run.
-    Skipping build...
-    """
-    properties(jobParams)
+    echo "Jenkins is initializing this job. Please re-run to start a deployment."
     currentBuild.result = 'NOT_BUILT'
     return
 }
-
-// Apply job parameters
-properties(jobParams)
 
 pipeline {
     agent { label 'docker' }
