@@ -3,23 +3,23 @@ def jobParams = [
         string(name: 'TARGET_HOST', defaultValue: 'pi', description: 'The resolvable hostname or IP of the target machine.'),
         credentials(
             name: 'SSH_CREDENTIAL_ID',
-            credentialType: 'SSH Username with private key',
+            // `credentialType` omitted to maintain compatibility with bitwarden-credentials-provider-plugin (Credentials of all types will be shown as options for this parameter)
             defaultValue: 'rpi-ssh',
-            description: 'The Jenkins credential ID for SSH access to the target machine.',
+            description: 'The Jenkins "SSH Username with private key" credential ID for SSH access to the target machine.',
             required: true
         ),
         credentials(
             name: 'TARGET_MACHINE_CREDENTIAL_ID',
-            credentialType: 'Username with password',
+            // `credentialType` omitted to maintain compatibility with bitwarden-credentials-provider-plugin (Credentials of all types will be shown as options for this parameter)
             defaultValue: 'rpi',
-            description: 'The Jenkins credential ID containing the sudo password to use on the target machine',
+            description: 'The Jenkins "Username with password" credential ID containing the sudo password to use on the target machine',
             required: true
         ),
         credentials(
             name: 'GLANCES_CREDENTIAL_ID',
-            credentialType: 'Username with password',
+            // `credentialType` omitted to maintain compatibility with bitwarden-credentials-provider-plugin (Credentials of all types will be shown as options for this parameter)
             defaultValue: 'rpi-glances',
-            description: 'The Jenkins credential ID for the Glances password. The username is ignored.',
+            description: 'The Jenkins "Username with password" credential ID for the Glances password. The username is ignored.',
             required: true
         )
     ])
