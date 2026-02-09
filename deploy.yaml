@@ -35,11 +35,11 @@
         update_cache: yes
         cache_valid_time: 86400
 
-    - name: Install Glances using pipx
+    - name: Ensure Glances is installed and at the latest version
       become_user: glances
-      ansible.builtin.command:
-        cmd: "pipx install 'glances[all]'"
-        creates: /home/glances/.local/bin/glances
+      community.general.pipx:
+        name: "glances[all]"
+        state: latest
 
     - name: Ensure Glances service is stopped
       ansible.builtin.systemd:
