@@ -38,7 +38,8 @@
     - name: Ensure Glances is installed and at the latest version
       become_user: glances
       community.general.pipx:
-        name: "glances[all]"
+        name: "glances"
+        source: "glances[all]"
         state: latest
 
     - name: Ensure Glances service is stopped
