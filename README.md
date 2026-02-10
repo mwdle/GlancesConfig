@@ -35,7 +35,9 @@ The Ansible playbook follows several best practices for a clean and secure deplo
 
 ## Prerequisites
 
-1. **Ansible:** The Jenkins agent must have Ansible installed.
+This project is optimized for the [mwdle/jenkins-agent](https://hub.docker.com/r/mwdle/jenkins-agent) Docker image (or [GitHub source](https://github.com/mwdle/jenkins-agent)), which contains all required dependencies to run this deployment out of the box.
+
+1. **Ansible:** The Jenkins agent must have Ansible installed along with the `community.general` collection which can be installed via `ansible-galaxy collection install community.general`.
 2. **Jenkins Credentials Plugin:** The `Credentials Binding` and `SSH Credentials` plugins must be installed in Jenkins.
 3. **Jenkins Credentials:**
    - **Glances Password:** A "Username with password" credential must be created in Jenkins to store the desired Glances password.
@@ -51,13 +53,11 @@ The Ansible playbook follows several best practices for a clean and secure deplo
 ## How to Use
 
 1. **Add Credentials to Jenkins:**
-
    - Create a "Username with password" credential (e.g., ID: `rpi-glances`). The username is ignored.
    - Create an "SSH Username with private key" credential for your target device (e.g., ID: `rpi-ssh`).
    - Create another "Username with password" credential for the sudo password (e.g., ID: `rpi`). The username is ignored.
 
 2. **Configure the Jenkins Pipeline:**
-
    - Create a new "Pipeline" job in Jenkins.
    - Configure the "Pipeline script from SCM" to point to this repository.
    - The `Jenkinsfile` will be automatically detected.
