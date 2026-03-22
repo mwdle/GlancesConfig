@@ -4,7 +4,7 @@
   become: yes
   vars:
     ansible_python_interpreter: /usr/bin/python3
-    glances_version: "4.5.2"
+    glances_version: 4.5.2
 
   pre_tasks:
     - name: Verify that the 'glances_pass' variable is provided and not empty
@@ -36,12 +36,36 @@
         update_cache: yes
         cache_valid_time: 86400
 
+    - name: Check the currently installed Glances version
+      become_user: glances
+      ansible.builtin.command: /home/glances/.local/bin/glances --version
+      register: glances_current_version
+      changed_when: false
+      failed_when: false
+
+    - name: Stop Glances service if an upgrade is needed
+      ansible.builtin.systemd:
+        name: glances
+        state: stopped
+      when:
+        - glances_current_version.rc == 0
+        - glances_version not in glances_current_version.stdout
+
+    - name: Uninstall Glances if the version doesn't match the target
+      become_user: glances
+      community.general.pipx:
+        name: glances
+        state: absent
+      when:
+        - glances_current_version.rc == 0
+        - glances_version not in glances_current_version.stdout
+
     - name: Ensure Glances is installed and at the target version
       become_user: glances
       community.general.pipx:
         name: "glances"
         source: "glances[web,sensors,smart,wifi]=={{ glances_version }}"
-        state: latest
+        state: present
 
     - name: Ensure Glances service is stopped
       ansible.builtin.systemd:
