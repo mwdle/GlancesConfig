@@ -1,0 +1,13 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["local>lab/renovate-config"],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "managerFilePatterns": ["\\.ya?ml$"],
+      "matchStrings": ["glances_version:\\s+(?<currentValue>[^\\s]+)"],
+      "depNameTemplate": "glances",
+      "datasourceTemplate": "pypi"
+    }
+  ]
+}

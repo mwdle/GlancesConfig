@@ -4,6 +4,7 @@
   become: yes
   vars:
     ansible_python_interpreter: /usr/bin/python3
+    glances_version: "4.5.2"
 
   pre_tasks:
     - name: Verify that the 'glances_pass' variable is provided and not empty
@@ -35,11 +36,11 @@
         update_cache: yes
         cache_valid_time: 86400
 
-    - name: Ensure Glances is installed and at the latest version
+    - name: Ensure Glances is installed and at the target version
       become_user: glances
       community.general.pipx:
         name: "glances"
-        source: "glances[web,sensors,smart,wifi]"
+        source: "glances[web,sensors,smart,wifi]=={{ glances_version }}"
         state: latest
 
     - name: Ensure Glances service is stopped
