@@ -39,7 +39,7 @@
       become_user: glances
       community.general.pipx:
         name: "glances"
-        source: "glances[all]"
+        source: "glances[web,sensors,smart,wifi]"
         state: latest
 
     - name: Ensure Glances service is stopped
