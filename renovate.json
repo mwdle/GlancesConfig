@@ -4,7 +4,7 @@
   "customManagers": [
     {
       "customType": "regex",
-      "managerFilePatterns": ["\\.ya?ml$"],
+      "managerFilePatterns": ["**/*.yaml", "**/*.yml"],
       "matchStrings": ["glances_version:\\s+(?<currentValue>[^\\s]+)"],
       "depNameTemplate": "glances",
       "datasourceTemplate": "pypi"
