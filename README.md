@@ -35,7 +35,7 @@ The Ansible playbook follows several best practices for a clean and secure deplo
 
 ## Prerequisites
 
-This project is optimized for the [mwdle/jenkins-agent](https://hub.docker.com/r/mwdle/jenkins-agent) Docker image (or [GitHub source](https://github.com/mwdle/jenkins-agent)), which contains all required dependencies to run this deployment out of the box.
+This project is optimized for the `lab/jenkins-agent` Docker image ([GitHub source](https://github.com/mwdle/jenkins-agent)), which contains all required dependencies to run this deployment out of the box.
 
 1. **Ansible:** The Jenkins agent must have Ansible installed along with the `community.general` collection which can be installed via `ansible-galaxy collection install community.general`.
 2. **Jenkins Credentials Plugin:** The `Credentials Binding` and `SSH Credentials` plugins must be installed in Jenkins.
