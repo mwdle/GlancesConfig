@@ -86,7 +86,7 @@
       ansible.builtin.expect:
         command: "/home/glances/.local/bin/glances -w --password"
         responses:
-          ".*Glances .*server password.*": "{{ glances_pass }}"
+          ".*Enter new password.*": "{{ glances_pass }}"
           ".*Password.*": "{{ glances_pass }}"
           ".*save the password?.*": "Yes"
           ".*Application startup complete.*": "\x03"
