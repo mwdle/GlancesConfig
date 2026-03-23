@@ -87,7 +87,7 @@
         command: "/home/glances/.local/bin/glances -w --password"
         responses:
           ".*Enter new password.*": "{{ glances_pass }}"
-          ".*Password.*": "{{ glances_pass }}"
+          ".*Confirm new password.*": "{{ glances_pass }}"
           ".*save the password?.*": "Yes"
           ".*Application startup complete.*": "\x03"
         # Long timeout provides better support for resource-limited systems that can take some time to start Glances for the first time and hash the provided password.
