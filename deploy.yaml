@@ -108,7 +108,7 @@
           WorkingDirectory=/home/glances
           # For single core systems, it can be useful to strictly limit the refresh/polling rate for statistics to avoid overloading the CPU for the purpose of taking measurements.
           # In this case, the polling rate is set to 15 seconds.
-          ExecStart=/home/glances/.local/bin/glances -w -B 0.0.0.0 --password -t 15
+          ExecStart=/home/glances/.local/bin/glances -w --disable-webui -B 0.0.0.0 --password -t 15
           Restart=always
           RemainAfterExit=no
           User=glances
