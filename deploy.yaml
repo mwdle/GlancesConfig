@@ -130,7 +130,7 @@
 
     - name: Verify that the Glances web service is responding
       ansible.builtin.uri:
-        url: "http://localhost:61208"
+        url: "http://localhost:61208/api/4/status"
         method: GET
         status_code: 200
         user: glances
