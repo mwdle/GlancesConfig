@@ -93,6 +93,19 @@
         # Long timeout provides better support for resource-limited systems that can take some time to start Glances for the first time and hash the provided password.
         timeout: 180
 
+      # https://glances.readthedocs.io/en/latest/api/restful.html#security
+    - name: Configure webui_allowed_hosts for DNS rebinding protection
+      ansible.builtin.ini_file:
+        path: /home/glances/.config/glances/glances.conf
+        section: outputs
+        option: webui_allowed_hosts
+        value: "localhost,127.0.0.1,{{ inventory_hostname }},{{ ansible_default_ipv4.address }}"
+        owner: glances
+        group: glances
+        mode: "0644"
+        create: yes
+      notify: Restart Glances
+
     - name: Create Systemd unit file
       ansible.builtin.copy:
         dest: /etc/systemd/system/glances.service
