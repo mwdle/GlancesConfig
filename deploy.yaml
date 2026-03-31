@@ -4,7 +4,7 @@
   become: yes
   vars:
     ansible_python_interpreter: /usr/bin/python3
-    glances_version: 4.5.2
+    glances_version: 4.5.3
 
   pre_tasks:
     - name: Verify that the 'glances_pass' variable is provided and not empty
