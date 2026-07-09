@@ -17,7 +17,7 @@ The deployment is designed to be secure and idempotent, using a dedicated system
 ## Features
 
 - **Automated Installation:** Installs the latest version of Glances via `pipx`.
-- **Cross-Platform:** Supports both Debian Linux distributions ONLY (e.g., DietPi, Ubuntu, Debian, etc.).
+- **Cross-Platform:** Supports Debian Linux distributions ONLY (e.g., DietPi, Ubuntu, Debian, etc.).
 - **Secure:**
   - Runs Glances as a dedicated, non-login system user (`glances`).
   - Configures password authentication for server mode.
