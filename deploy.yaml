@@ -95,7 +95,7 @@
 
       # https://glances.readthedocs.io/en/latest/api/restful.html#security
     - name: Configure webui_allowed_hosts for DNS rebinding protection
-      ansible.builtin.ini_file:
+      community.general.ini_file:
         path: /home/glances/.config/glances/glances.conf
         section: outputs
         option: webui_allowed_hosts
