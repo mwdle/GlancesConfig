@@ -55,19 +55,16 @@
 
     - name: Uninstall Glances if the version doesn't match the target
       become_user: glances
-      community.general.pipx:
-        name: glances
-        state: absent
+      ansible.builtin.command: pipx uninstall glances
       when:
         - glances_current_version.rc == 0
         - glances_version not in glances_current_version.stdout
 
     - name: Ensure Glances is installed and at the target version
       become_user: glances
-      community.general.pipx:
-        name: "glances"
-        source: "glances[web,sensors,smart,wifi]=={{ glances_version }}"
-        state: present
+      ansible.builtin.command: pipx install "glances[web,sensors,smart,wifi]=={{ glances_version }}"
+      args:
+        creates: /home/glances/.local/bin/glances
 
     - name: Ensure Glances service is stopped
       ansible.builtin.systemd:
