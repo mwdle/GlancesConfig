@@ -1,3 +1,5 @@
+@Library("JenkinsPipelines") _ // See https://github.com/mwdle/JenkinsPipelines
+
 pipeline {
     agent { label 'docker' }
     options { disableConcurrentBuilds() }
@@ -27,6 +29,11 @@ pipeline {
         )
     }
     stages {
+        stage('Security Scan') {
+            steps {
+                securityScanStep()
+            }
+        }
         stage('Deploy Glances') {
             steps {
                 withCredentials([
